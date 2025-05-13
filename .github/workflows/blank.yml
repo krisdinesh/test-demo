@@ -47,7 +47,7 @@ jobs:
       - name: Deploy using Medistrano
         run: echo "Deploy using Medistrano"
         
-  installation test:
+  installationtest:
     runs-on: ubuntu-latest
     needs: deploy
     steps:
@@ -57,7 +57,7 @@ jobs:
 
   tests:
     runs-on: ubuntu-latest
-    needs: deploy
+    needs: installationtest
     strategy:
       matrix:
         test-type: [e2e, performance, security]
