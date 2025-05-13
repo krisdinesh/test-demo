@@ -1,0 +1,65 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+      - name: Install Dependencies
+        run: echo "npm install"
+      - name: Build
+        run: echo "npm run build"
+      - name: Upload build artifacts
+        run: echo "Upload artifacts"
+
+  test:
+    runs-on: ubuntu-latest
+    needs: build
+    strategy:
+      matrix:
+        test-type: [unit, contract]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+      - name: Install Dependencies
+        run: echo "npm install"
+      - name: Run ${{ matrix.test-type }} tests
+        run: echo "npm run test:${{ matrix.test-type }}"
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: test
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download build artifacts
+        run: echo "Download build artifacts"
+      - name: Deploy using Medistrano
+        run: echo "Deploy using Medistrano"
+
+  post-deployment-tests:
+    runs-on: ubuntu-latest
+    needs: deploy
+    strategy:
+      matrix:
+        test-type: [e2e, performance, security]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+      - name: Install Dependencies
+        run: echo "npm install"
+      - name: Run ${{ matrix.test-type }} tests
+        run: echo "npm run test:${{ matrix.test-type }}"
