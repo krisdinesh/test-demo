@@ -46,6 +46,14 @@ jobs:
         run: echo "Download build artifacts"
       - name: Deploy using Medistrano
         run: echo "Deploy using Medistrano"
+        
+  installationtest:
+    runs-on: ubuntu-latest
+    needs: test
+    steps:
+      - uses: actions/checkout@v4
+      - name: Environment/Installation Verification Test
+        run: echo "Environment/Installation Verification Test"
 
   tests:
     runs-on: ubuntu-latest
